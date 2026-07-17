@@ -21,7 +21,7 @@ export default function NoticiasPage() {
         <Card className="border-dashed mt-10">
           <CardContent className="p-12 text-center">
             <h3 className="font-semibold text-lg">Sin noticias todavía</h3>
-            <p className="text-muted-foreground text-sm mt-1">Publicá desde <Link className="text-primary underline" href="/admin">/admin</Link>.</p>
+            <p className="text-muted-foreground text-sm mt-1">Estamos preparando nuevas publicaciones.</p>
           </CardContent>
         </Card>
       ) : (

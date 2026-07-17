@@ -79,7 +79,7 @@ export default function HomePage() {
             <div>
               <Badge variant="outline" className="border-secondary/40 text-secondary">Últimas publicaciones</Badge>
               <h2 className="text-3xl md:text-4xl font-bold mt-3">Noticias recientes</h2>
-              <p className="text-muted-foreground mt-2">Actualizadas desde el panel <Link href="/admin" className="text-primary underline">/admin</Link> — Decap CMS.</p>
+              <p className="text-muted-foreground mt-2">Novedades de nuestros proyectos, campañas y comunidad.</p>
             </div>
             <Button asChild variant="outline"><Link href="/noticias">Ver todas <ArrowRight className="w-4 h-4 ml-2" /></Link></Button>
           </div>
@@ -88,7 +88,7 @@ export default function HomePage() {
             <Card className="border-dashed">
               <CardContent className="p-12 text-center">
                 <h3 className="font-semibold text-lg">Aún no hay noticias publicadas</h3>
-                <p className="text-muted-foreground text-sm mt-1">Publicá desde <Link href="/admin" className="text-primary underline">/admin</Link>.</p>
+                <p className="text-muted-foreground text-sm mt-1">Estamos preparando nuestras primeras publicaciones. Volvé pronto.</p>
               </CardContent>
             </Card>
           ) : (

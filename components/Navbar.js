@@ -11,9 +11,6 @@ const links = [
   { href: '/proyectos', label: 'Proyectos' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contacto', label: 'Contacto' },
-  { href: '/manual', label: 'Manual' },
-  { href: '/deploy', label: 'Deploy' },
-  { href: '/admin', label: 'CMS', external: true },
 ]
 
 export default function Navbar() {

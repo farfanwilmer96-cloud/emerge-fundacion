@@ -15,7 +15,7 @@ export default function FaqPage() {
     <div className="container mx-auto px-4 py-16 max-w-4xl">
       <Badge variant="outline" className="border-secondary/40 text-secondary"><MessagesSquare className="w-3 h-3 mr-1" /> Ayuda</Badge>
       <h1 className="text-4xl md:text-5xl font-bold mt-3">Preguntas frecuentes</h1>
-      <p className="text-muted-foreground mt-3 text-lg">Respuestas rápidas a lo que más nos preguntan. Todo editable desde el panel <Link href="/admin" className="text-primary underline">/admin</Link>.</p>
+      <p className="text-muted-foreground mt-3 text-lg">Respuestas rápidas a lo que más nos preguntan.</p>
 
       {faqs.length === 0 ? (
         <Card className="border-dashed mt-8">

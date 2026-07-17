@@ -22,8 +22,9 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-slate-400">
             <li><Link href="/" className="hover:text-secondary">Inicio</Link></li>
             <li><Link href="/noticias" className="hover:text-secondary">Noticias</Link></li>
+            <li><Link href="/proyectos" className="hover:text-secondary">Proyectos</Link></li>
+            <li><Link href="/faq" className="hover:text-secondary">Preguntas frecuentes</Link></li>
             <li><Link href="/contacto" className="hover:text-secondary">Contacto</Link></li>
-            <li><Link href="/admin" className="hover:text-secondary">Panel CMS</Link></li>
           </ul>
         </div>
         <div>
