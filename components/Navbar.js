@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 const links = [
   { href: '/', label: 'Inicio' },
   { href: '/noticias', label: 'Noticias' },
+  { href: '/proyectos', label: 'Proyectos' },
   { href: '/contacto', label: 'Contacto' },
   { href: '/manual', label: 'Manual' },
   { href: '/admin', label: 'CMS', external: true },
