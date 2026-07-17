@@ -26,10 +26,12 @@ public_folder: "/images/uploads"
 # Interfaz en Español
 locale: 'es'
 
-# Mensajes personalizados de commit
-site_url: https://fundacrecer.org
-display_url: https://fundacrecer.org
-logo_url: https://images.unsplash.com/photo-1614710791641-4cd7a5c855f2?w=200
+# Estos URLs son SOLO para el botón "View site" dentro del panel CMS.
+# NO afectan dónde se publica el contenido — eso lo maneja Netlify + GitHub.
+# Cambialos por la URL real de tu sitio cuando lo despliegues.
+# site_url: https://fundacrecer.org
+# display_url: https://fundacrecer.org
+# logo_url: https://images.unsplash.com/photo-1614710791641-4cd7a5c855f2?w=200
 
 collections:
   # ============================================================
