@@ -15,105 +15,67 @@ async function getDb() {
 }
 
 const clean = (doc) => { if (!doc) return doc; const { _id, ...rest } = doc; return rest }
-
 const json = (data, status = 200) => NextResponse.json(data, { status })
 const err = (msg, status = 400) => NextResponse.json({ error: msg }, { status })
+
+// --------- validaciones server-side (defensa en profundidad) ----------
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PHONE_RE = /^[\d\s+()-]{6,}$/
+
+function validateContact(body) {
+  if (!body || typeof body !== 'object') return 'Cuerpo inválido'
+  const { name, email, phone, message } = body
+  if (typeof name !== 'string' || name.trim().length < 2 || name.length > 120) return 'Nombre inválido'
+  if (typeof email !== 'string' || !EMAIL_RE.test(email) || email.length > 200) return 'Email inválido'
+  if (phone && (typeof phone !== 'string' || !PHONE_RE.test(phone) || phone.length > 40)) return 'Teléfono inválido'
+  if (typeof message !== 'string' || message.trim().length < 10 || message.length > 5000) return 'Mensaje inválido'
+  return null
+}
 
 async function handler(request, { params }) {
   const { path = [] } = (await params) || {}
   const method = request.method
-  const [resource, id] = path
+  const [resource] = path
 
   try {
-    const db = await getDb()
-
     // Health
     if (!resource) return json({ ok: true, service: 'Funda Crecer API', time: new Date().toISOString() })
 
-    // ================= NEWS =================
-    if (resource === 'news') {
-      const news = db.collection('news')
-
-      if (method === 'GET' && !id) {
-        const url = new URL(request.url)
-        const limit = parseInt(url.searchParams.get('limit') || '100')
-        const docs = await news.find({}).sort({ date: -1, created_at: -1 }).limit(limit).toArray()
-        return json({ news: docs.map(clean) })
-      }
-
-      if (method === 'GET' && id) {
-        // id could be slug or uuid
-        const doc = await news.findOne({ $or: [{ id }, { slug: id }] })
-        if (!doc) return err('No encontrado', 404)
-        return json({ news: clean(doc) })
-      }
-
-      if (method === 'POST') {
-        const body = await request.json()
-        if (!body.title || !body.body) return err('Título y contenido obligatorios')
-        const slug = body.slug || body.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')
-        // ensure unique slug
-        const exists = await news.findOne({ slug })
-        const finalSlug = exists ? `${slug}-${Date.now().toString(36)}` : slug
-        const doc = {
-          id: uuidv4(),
-          title: body.title,
-          slug: finalSlug,
-          cover_image: body.cover_image || '',
-          date: body.date || new Date().toISOString().slice(0,10),
-          author: body.author || '',
-          body: body.body,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        }
-        await news.insertOne(doc)
-        return json({ news: clean(doc) }, 201)
-      }
-
-      if (method === 'PUT' && id) {
-        const body = await request.json()
-        const update = {
-          ...(body.title && { title: body.title }),
-          ...(body.slug && { slug: body.slug }),
-          ...(body.cover_image !== undefined && { cover_image: body.cover_image }),
-          ...(body.date && { date: body.date }),
-          ...(body.author !== undefined && { author: body.author }),
-          ...(body.body && { body: body.body }),
-          updated_at: new Date().toISOString(),
-        }
-        const r = await news.findOneAndUpdate({ $or: [{ id }, { slug: id }] }, { $set: update }, { returnDocument: 'after' })
-        const updated = r?.value || r
-        if (!updated) return err('No encontrado', 404)
-        return json({ news: clean(updated) })
-      }
-
-      if (method === 'DELETE' && id) {
-        const r = await news.deleteOne({ $or: [{ id }, { slug: id }] })
-        if (r.deletedCount === 0) return err('No encontrado', 404)
-        return json({ ok: true })
-      }
-    }
-
-    // ================= CONTACT =================
+    // ================= CONTACT — único endpoint expuesto =================
     if (resource === 'contact') {
+      // ⚠️ NOTA DE SEGURIDAD: solo POST está permitido públicamente.
+      // GET/PUT/DELETE se eliminaron por AppSec (data leak PII).
+      // Para acceder a los mensajes usar el CMS / dashboard interno con auth.
+      if (method !== 'POST') return err('Método no permitido', 405)
+
+      let body
+      try { body = await request.json() } catch { return err('JSON inválido') }
+
+      const validationErr = validateContact(body)
+      if (validationErr) return err(validationErr)
+
+      const db = await getDb()
       const contacts = db.collection('contacts')
-      if (method === 'POST') {
-        const body = await request.json()
-        if (!body.name || !body.email || !body.message) return err('Campos obligatorios faltantes')
-        const doc = { id: uuidv4(), name: body.name, email: body.email, phone: body.phone || '', message: body.message, created_at: new Date().toISOString() }
-        await contacts.insertOne(doc)
-        return json({ ok: true, contact: clean(doc) }, 201)
+      const doc = {
+        id: uuidv4(),
+        name: body.name.trim(),
+        email: body.email.trim().toLowerCase(),
+        phone: (body.phone || '').trim(),
+        message: body.message.trim(),
+        ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+        user_agent: request.headers.get('user-agent') || null,
+        created_at: new Date().toISOString(),
       }
-      if (method === 'GET') {
-        const docs = await contacts.find({}).sort({ created_at: -1 }).toArray()
-        return json({ contacts: docs.map(clean) })
-      }
+      await contacts.insertOne(doc)
+      // No devolvemos el documento completo (evita filtrar IP/UA al cliente)
+      return json({ ok: true, id: doc.id }, 201)
     }
 
     return err('Ruta no encontrada', 404)
   } catch (e) {
-    console.error('API error:', e)
-    return err('Error interno del servidor: ' + e.message, 500)
+    // Nunca filtrar e.message al cliente — solo al log del servidor
+    console.error('[API] error:', e)
+    return err('Error interno del servidor', 500)
   }
 }
 

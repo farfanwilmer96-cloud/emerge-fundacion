@@ -29,15 +29,36 @@ const nextConfig = {
     ]
   },
   async headers() {
+    const isProd = process.env.NODE_ENV === 'production'
+    const corsOrigin = process.env.CORS_ORIGINS && process.env.CORS_ORIGINS !== '*'
+      ? process.env.CORS_ORIGINS
+      : (process.env.NEXT_PUBLIC_BASE_URL || 'https://fundacrecer.org')
     return [
       {
+        // Headers de seguridad para TODO el sitio
         source: "/(.*)",
         headers: [
-          { key: "X-Frame-Options", value: "ALLOWALL" },
-          { key: "Content-Security-Policy", value: "frame-ancestors *;" },
-          { key: "Access-Control-Allow-Origin", value: process.env.CORS_ORIGINS || "*" },
-          { key: "Access-Control-Allow-Methods", value: "GET, POST, PUT, DELETE, OPTIONS" },
-          { key: "Access-Control-Allow-Headers", value: "*" },
+          // Anti-clickjacking: solo permitir iframe desde el mismo origen
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self';" },
+          // Prevenir MIME sniffing
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          // Referrer mínimo
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // HSTS (solo prod, con dominio propio HTTPS)
+          ...(isProd ? [{ key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" }] : []),
+          // Permissions restrictivas por defecto
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
+        ],
+      },
+      {
+        // CORS explícito SOLO para /api — restringido al dominio del sitio
+        source: "/api/(.*)",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: corsOrigin },
+          { key: "Access-Control-Allow-Methods", value: "GET, POST, OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type" },
+          { key: "Vary", value: "Origin" },
         ],
       },
     ];
