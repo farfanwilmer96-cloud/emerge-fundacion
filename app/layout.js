@@ -4,6 +4,7 @@ import Script from 'next/script'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Toaster } from '@/components/ui/sonner'
+import NetlifyIdentityHandler from '@/components/NetlifyIdentityHandler'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
@@ -69,20 +70,8 @@ export default function RootLayout({ children }) {
         <Toaster richColors position="top-right" />
         {/* Netlify Identity Widget — captura el #invite_token del email
             y redirige a /admin/ luego del primer login. */}
-        <Script src="https://identity.netlify.com/v1/netlify-identity-widget.js" strategy="afterInteractive" />
-        <Script id="netlify-identity-redirect" strategy="afterInteractive">
-          {`
-            if (window.netlifyIdentity) {
-              window.netlifyIdentity.on("init", user => {
-                if (!user) {
-                  window.netlifyIdentity.on("login", () => {
-                    document.location.href = "/admin/";
-                  });
-                }
-              });
-            }
-          `}
-        </Script>
+        <Script src="https://identity.netlify.com/v1/netlify-identity-widget.js" strategy="beforeInteractive" />
+        <NetlifyIdentityHandler />
       </body>
     </html>
   )
