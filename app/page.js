@@ -1,14 +1,15 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import ReactMarkdown from 'react-markdown'
-import { ArrowRight, Heart, Users, BookOpen, Sparkles, Calendar, Sprout } from 'lucide-react'
+import { ArrowRight, Heart, Users, BookOpen, Sparkles, Calendar, Sprout, HelpCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { getAllNews } from '@/lib/content'
+import { getAllNews, getAllFaqs } from '@/lib/content'
+import Reveal from '@/components/Reveal'
 
 export default function HomePage() {
   const news = getAllNews().slice(0, 3)
+  const faqs = getAllFaqs().slice(0, 4)
 
   return (
     <>
@@ -45,26 +46,28 @@ export default function HomePage() {
 
       {/* PILLARS */}
       <section className="container mx-auto px-4 py-20">
-        <div className="text-center max-w-2xl mx-auto">
+        <Reveal className="text-center max-w-2xl mx-auto">
           <Badge variant="outline" className="border-primary/30 text-primary">Nuestros pilares</Badge>
           <h2 className="text-3xl md:text-4xl font-bold mt-3">Trabajamos donde más se necesita</h2>
           <p className="text-muted-foreground mt-3">Tres líneas de acción, un mismo compromiso: dignidad, educación y comunidad.</p>
-        </div>
+        </Reveal>
         <div className="grid md:grid-cols-3 gap-6 mt-12">
           {[
             {Icon: BookOpen, title: 'Educación', desc: 'Becas, refuerzo escolar y bibliotecas comunitarias en zonas rurales.', color: 'from-blue-500 to-blue-600'},
             {Icon: Users, title: 'Comunidad', desc: 'Fortalecemos redes vecinales y liderazgos locales sostenibles.', color: 'from-emerald-500 to-emerald-600'},
             {Icon: Heart, title: 'Bienestar', desc: 'Nutrición, salud básica y contención emocional para las familias.', color: 'from-rose-500 to-rose-600'},
-          ].map(p => (
-            <Card key={p.title} className="border-border/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <CardContent className="p-8">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} text-white flex items-center justify-center mb-5`}>
-                  <p.Icon className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-bold">{p.title}</h3>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{p.desc}</p>
-              </CardContent>
-            </Card>
+          ].map((p, i) => (
+            <Reveal key={p.title} delay={i * 0.1}>
+              <Card className="border-border/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full">
+                <CardContent className="p-8">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} text-white flex items-center justify-center mb-5`}>
+                    <p.Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">{p.title}</h3>
+                  <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{p.desc}</p>
+                </CardContent>
+              </Card>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -116,6 +119,38 @@ export default function HomePage() {
           )}
         </div>
       </section>
+
+      {/* FAQ PREVIEW */}
+      {faqs.length > 0 && (
+        <section className="container mx-auto px-4 py-20">
+          <div className="grid lg:grid-cols-5 gap-10 items-start">
+            <Reveal className="lg:col-span-2 lg:sticky lg:top-24">
+              <Badge variant="outline" className="border-secondary/40 text-secondary"><HelpCircle className="w-3 h-3 mr-1" /> Preguntas frecuentes</Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mt-3">Dudas comunes, respuestas claras.</h2>
+              <p className="text-muted-foreground mt-3">Todo lo que querés saber sobre donaciones, voluntariado, transparencia y más.</p>
+              <Button asChild variant="outline" className="mt-6"><Link href="/faq">Ver todas <ArrowRight className="w-4 h-4 ml-2" /></Link></Button>
+            </Reveal>
+            <div className="lg:col-span-3 space-y-3">
+              {faqs.map((f, i) => (
+                <Reveal key={f.id} delay={i * 0.08}>
+                  <Link href="/faq" className="block rounded-xl border border-border bg-white/60 hover:border-primary/40 hover:shadow-md transition-all p-5 group">
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 group-hover:brand-gradient group-hover:text-white transition-all">
+                        <HelpCircle className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1">
+                        <Badge variant="outline" className="text-[10px] uppercase tracking-wider text-muted-foreground border-border mb-1">{f.category}</Badge>
+                        <h3 className="font-semibold group-hover:text-primary transition-colors">{f.question}</h3>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all mt-2" />
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="container mx-auto px-4 py-20">

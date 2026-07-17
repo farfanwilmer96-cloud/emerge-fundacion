@@ -84,3 +84,21 @@ collections:
           label: "Imagen"
           name: "image"
           widget: "image"
+
+  # ============================================================
+  # 3. PREGUNTAS FRECUENTES (FAQ)
+  # ============================================================
+  - name: "faqs"
+    label: "❓ Preguntas Frecuentes"
+    label_singular: "Pregunta"
+    folder: "content/faqs"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{question}}"
+    sortable_fields: ['order', 'question']
+    fields:
+      - { label: "Pregunta", name: "question", widget: "string" }
+      - { label: "Slug", name: "slug", widget: "string", pattern: ['^[a-z0-9-]+$', 'Solo minúsculas, números y guiones'] }
+      - { label: "Categoría", name: "category", widget: "select", options: ["General", "Donaciones", "Voluntariado", "Proyectos"], default: "General" }
+      - { label: "Orden", name: "order", widget: "number", default: 1, value_type: "int", hint: "Menor número = aparece primero" }
+      - { label: "Respuesta", name: "answer", widget: "markdown" }
