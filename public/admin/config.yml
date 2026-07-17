@@ -11,10 +11,10 @@
 # ============================================================
 
 backend:
-  name: test-repo
+  # name: test-repo
   # --- Para producción en Netlify (descomentar y quitar test-repo): ---
-  # name: git-gateway
-  # branch: main
+   name: git-gateway
+   branch: main
 
 # Permite escribir archivos localmente con `npx decap-server`
 local_backend: true
