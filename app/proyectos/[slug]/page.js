@@ -15,7 +15,27 @@ export async function generateMetadata({ params }) {
   const { slug } = await params
   const p = getProjectBySlug(slug)
   if (!p) return { title: 'Proyecto no encontrado — Funda Crecer' }
-  return { title: `${p.name} — Funda Crecer`, description: p.short_description }
+  const url = `/proyectos/${p.slug}`
+  const image = p.cover_image || undefined
+  return {
+    title: `${p.name} — Funda Crecer`,
+    description: p.short_description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      url,
+      title: p.name,
+      description: p.short_description,
+      images: image ? [{ url: image, width: 1200, height: 630, alt: p.name }] : undefined,
+      siteName: 'Funda Crecer',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: p.name,
+      description: p.short_description,
+      images: image ? [image] : undefined,
+    },
+  }
 }
 
 export default async function ProjectDetail({ params }) {

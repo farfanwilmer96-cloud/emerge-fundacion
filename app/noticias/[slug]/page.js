@@ -13,7 +13,30 @@ export async function generateMetadata({ params }) {
   const { slug } = await params
   const n = getNewsBySlug(slug)
   if (!n) return { title: 'Noticia no encontrada — Funda Crecer' }
-  return { title: `${n.title} — Funda Crecer`, description: (n.body || '').replace(/[#*_>`\n]/g,' ').slice(0,150) }
+  const description = (n.body || '').replace(/[#*_>`\n]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160)
+  const url = `/noticias/${n.slug}`
+  const image = n.cover_image || undefined
+  return {
+    title: `${n.title} — Funda Crecer`,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      url,
+      title: n.title,
+      description,
+      publishedTime: n.date,
+      authors: n.author ? [n.author] : undefined,
+      images: image ? [{ url: image, width: 1200, height: 630, alt: n.title }] : undefined,
+      siteName: 'Funda Crecer',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: n.title,
+      description,
+      images: image ? [image] : undefined,
+    },
+  }
 }
 
 export default async function NoticiaDetail({ params }) {
@@ -21,8 +44,23 @@ export default async function NoticiaDetail({ params }) {
   const n = getNewsBySlug(slug)
   if (!n) notFound()
 
+  const SITE = process.env.NEXT_PUBLIC_BASE_URL || ''
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: n.title,
+    image: n.cover_image ? [n.cover_image] : undefined,
+    datePublished: n.date,
+    dateModified: n.date,
+    author: { '@type': 'Person', name: n.author || 'Funda Crecer' },
+    publisher: { '@type': 'Organization', name: 'Funda Crecer', logo: { '@type': 'ImageObject', url: `${SITE}/icon.png` } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE}/noticias/${n.slug}` },
+    description: (n.body || '').replace(/[#*_>`\n]/g, ' ').slice(0, 160),
+  }
+
   return (
     <article>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       <div className="relative h-[45vh] min-h-[320px] w-full overflow-hidden bg-slate-200">
         {n.cover_image ? (
           <img src={n.cover_image} alt={n.title} className="w-full h-full object-cover" />
