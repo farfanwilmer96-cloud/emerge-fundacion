@@ -1,0 +1,26 @@
+Name,Slug,Category,Order,Answer
+¿Mi donación mensual se puede cancelar cuando quiera?,cancelar-donacion,Donaciones,3,"<p>Por supuesto. Enviamos por email un enlace de gestión con cada recibo, desde donde podés pausar, modificar el monto o cancelar en un clic. Sin llamadas, sin fricciones.</p>"
+¿Cómo puedo donar a Funda Crecer?,como-donar,Donaciones,1,"<p>Aceptamos donaciones únicas o mensuales por transferencia bancaria, tarjeta de crédito y PayPal. Contactanos por el formulario y te enviamos los datos. Todas las donaciones son deducibles de impuestos.</p>"
+¿Puedo proponer un proyecto para mi comunidad?,proponer-proyecto,Proyectos,5,"<p>Sí. Tenemos un formulario específico para propuestas comunitarias. Nuestro comité evalúa mensualmente los pedidos y responde en menos de 30 días. Los criterios: viabilidad, impacto y sostenibilidad.</p>"
+¿Las becas cubren solo la matrícula?,que-cubren-becas,Proyectos,6,"<p>Nuestras becas son integrales. Cubren:</p>
+<ul>
+<li>Matrícula y aranceles</li>
+<li>Materiales de estudio</li>
+<li>Transporte hacia la institución</li>
+<li>Un estipendio para depósitos y refrigerio</li>
+</ul>
+<p>Además cada becado tiene un tutor asignado durante todo el año.</p>"
+¿Cómo garantizan la transparencia?,transparencia,General,4,"<p>Publicamos anualmente:</p>
+<ol>
+<li><strong>Estados financieros auditados</strong> por una firma independiente.</li>
+<li><strong>Reportes de impacto</strong> con métricas verificables por proyecto.</li>
+<li><strong>Lista de aliados</strong> y donantes principales (con su consentimiento).</li>
+</ol>
+<p>Toda la información queda histórica en la sección Noticias.</p>"
+¿Puedo ser voluntario si no vivo cerca de las comunidades?,voluntariado-remoto,Voluntariado,2,"<p><strong>¡Sí!</strong> Tenemos programas de voluntariado remoto en:</p>
+<ul>
+<li>Diseño gráfico y comunicación</li>
+<li>Tutorías online para jóvenes becados</li>
+<li>Traducción de materiales educativos</li>
+</ul>
+<p>Escribínos contando tus habilidades disponibles.</p>"
