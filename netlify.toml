@@ -1,0 +1,48 @@
+# ============================================================
+# NETLIFY.TOML — Configuración de despliegue para Funda Crecer
+# ============================================================
+
+[build]
+  command = "yarn build"
+  publish = ".next"
+
+# Plugin oficial de Next.js (soporta SSR, API routes, ISR, etc.)
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# ============================================================
+# REGLAS DE RUTA para Decap CMS
+# ============================================================
+# Cuando el cliente accede a /admin, servimos el index.html estático
+# que carga la UI de Decap. Sin esta regla, Next.js intentaría buscar
+# una ruta App Router inexistente.
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/:splat"
+  status = 200
+
+# ============================================================
+# HEADERS DE SEGURIDAD BÁSICOS
+# ============================================================
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache agresivo para uploads de imágenes del CMS
+[[headers]]
+  for = "/images/uploads/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

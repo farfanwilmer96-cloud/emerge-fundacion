@@ -10,6 +10,7 @@ const links = [
   { href: '/proyectos', label: 'Proyectos' },
   { href: '/contacto', label: 'Contacto' },
   { href: '/manual', label: 'Manual' },
+  { href: '/deploy', label: 'Deploy' },
   { href: '/admin', label: 'CMS', external: true },
 ]
 
