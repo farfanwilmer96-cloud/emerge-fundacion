@@ -1,0 +1,86 @@
+# ============================================================
+# CONFIGURACIÓN DECAP CMS — Funda Crecer
+# ------------------------------------------------------------
+# MODO DEMO (actual): usa `test-repo` para que el cliente pruebe
+# la interfaz completa dentro del navegador SIN necesidad de
+# repositorio Git. Los cambios se guardan en memoria y se
+# reinician al recargar. Perfecto para demostraciones.
+#
+# MODO PRODUCCIÓN: cuando el sitio esté en Netlify, comentar
+# `name: test-repo` y descomentar la sección `git-gateway`.
+# ============================================================
+
+backend:
+  name: test-repo
+  # --- Para producción en Netlify (descomentar y quitar test-repo): ---
+  # name: git-gateway
+  # branch: main
+
+# Permite escribir archivos localmente con `npx decap-server`
+local_backend: true
+
+# Configuración de Media (imágenes)
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+# Interfaz en Español
+locale: 'es'
+
+# Mensajes personalizados de commit
+site_url: https://fundacrecer.org
+display_url: https://fundacrecer.org
+logo_url: https://images.unsplash.com/photo-1614710791641-4cd7a5c855f2?w=200
+
+collections:
+  # ============================================================
+  # 1. NOTICIAS / BLOG
+  # ============================================================
+  - name: "news"
+    label: "📰 Noticias"
+    label_singular: "Noticia"
+    folder: "content/news"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} — {{date | date('DD/MM/YYYY')}}"
+    sortable_fields: ['date', 'title']
+    view_filters:
+      - label: "Publicadas este año"
+        field: date
+        pattern: '2025'
+    fields:
+      - { label: "Título", name: "title", widget: "string", hint: "Ej: Inauguramos la biblioteca comunitaria" }
+      - { label: "Slug (URL amigable)", name: "slug", widget: "string", hint: "Se generará la ruta /noticias/tu-slug", pattern: ['^[a-z0-9-]+$', 'Solo minúsculas, números y guiones'] }
+      - { label: "Imagen de Portada", name: "cover_image", widget: "image", required: false, hint: "Recomendado 1600x900px" }
+      - { label: "Fecha de Publicación", name: "date", widget: "datetime", default: "", format: "YYYY-MM-DD", date_format: "DD/MM/YYYY", time_format: false }
+      - { label: "Autor", name: "author", widget: "string", default: "Equipo Funda Crecer" }
+      - { label: "Cuerpo de la Publicación", name: "body", widget: "markdown", hint: "Editor visual: negritas, listas, imágenes, enlaces" }
+
+  # ============================================================
+  # 2. PROYECTOS / CAMPAÑAS
+  # ============================================================
+  - name: "projects"
+    label: "🎯 Proyectos"
+    label_singular: "Proyecto"
+    folder: "content/projects"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{name}} — {{status}}"
+    fields:
+      - { label: "Nombre del Proyecto", name: "name", widget: "string" }
+      - { label: "Slug", name: "slug", widget: "string", pattern: ['^[a-z0-9-]+$', 'Solo minúsculas, números y guiones'] }
+      - { label: "Descripción Corta", name: "short_description", widget: "text", hint: "Máximo 2-3 líneas" }
+      - label: "Estado"
+        name: "status"
+        widget: "select"
+        options: ["Activo", "Completado"]
+        default: "Activo"
+      - { label: "Imagen principal", name: "cover_image", widget: "image", required: false }
+      - label: "Galería de Imágenes"
+        name: "gallery"
+        widget: "list"
+        required: false
+        summary: "{{fields.caption}}"
+        field:
+          label: "Imagen"
+          name: "image"
+          widget: "image"

@@ -2,20 +2,12 @@ import Link from 'next/link'
 import { Calendar, ArrowRight, Sprout } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { getAllNews } from '@/lib/content'
 
-async function getAllNews() {
-  try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL || ''
-    const res = await fetch(`${base}/api/news`, { cache: 'no-store' })
-    if (!res.ok) return []
-    const data = await res.json()
-    return data.news || []
-  } catch { return [] }
-}
+export const metadata = { title: 'Noticias — Funda Crecer' }
 
-export default async function NoticiasPage() {
-  const news = await getAllNews()
+export default function NoticiasPage() {
+  const news = getAllNews()
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -29,7 +21,7 @@ export default async function NoticiasPage() {
         <Card className="border-dashed mt-10">
           <CardContent className="p-12 text-center">
             <h3 className="font-semibold text-lg">Sin noticias todavía</h3>
-            <p className="text-muted-foreground text-sm mt-1">Publicá desde <Link className="text-primary underline" href="/admin">/admin</Link> y aparecerán acá al instante.</p>
+            <p className="text-muted-foreground text-sm mt-1">Publicá desde <Link className="text-primary underline" href="/admin">/admin</Link>.</p>
           </CardContent>
         </Card>
       ) : (
@@ -50,7 +42,7 @@ export default async function NoticiasPage() {
                     {n.author && <span>· {n.author}</span>}
                   </div>
                   <h3 className="font-bold text-lg mt-2 group-hover:text-primary transition-colors line-clamp-2">{n.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{(n.body || '').replace(/<[^>]+>/g,'').slice(0,160)}</p>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{(n.body || '').replace(/[#*_>`]/g,'').slice(0,160)}</p>
                   <span className="inline-flex items-center gap-1 text-sm font-medium text-primary mt-4">Leer más <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" /></span>
                 </CardContent>
               </Card>

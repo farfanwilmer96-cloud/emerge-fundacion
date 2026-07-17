@@ -23,6 +23,11 @@ const nextConfig = {
     maxInactiveAge: 10000,
     pagesBufferLength: 2,
   },
+  async rewrites() {
+    return [
+      { source: '/admin', destination: '/admin/index.html' },
+    ]
+  },
   async headers() {
     return [
       {

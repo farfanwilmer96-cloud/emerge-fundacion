@@ -1,22 +1,14 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Heart, Users, BookOpen, Sparkles, Calendar } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import { ArrowRight, Heart, Users, BookOpen, Sparkles, Calendar, Sprout } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { getAllNews } from '@/lib/content'
 
-async function getLatestNews() {
-  try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL || ''
-    const res = await fetch(`${base}/api/news?limit=3`, { cache: 'no-store' })
-    if (!res.ok) return []
-    const data = await res.json()
-    return data.news || []
-  } catch { return [] }
-}
-
-export default async function HomePage() {
-  const news = await getLatestNews()
+export default function HomePage() {
+  const news = getAllNews().slice(0, 3)
 
   return (
     <>
@@ -84,7 +76,7 @@ export default async function HomePage() {
             <div>
               <Badge variant="outline" className="border-secondary/40 text-secondary">Últimas publicaciones</Badge>
               <h2 className="text-3xl md:text-4xl font-bold mt-3">Noticias recientes</h2>
-              <p className="text-muted-foreground mt-2">Actualizadas directamente desde nuestro panel CMS.</p>
+              <p className="text-muted-foreground mt-2">Actualizadas desde el panel <Link href="/admin" className="text-primary underline">/admin</Link> — Decap CMS.</p>
             </div>
             <Button asChild variant="outline"><Link href="/noticias">Ver todas <ArrowRight className="w-4 h-4 ml-2" /></Link></Button>
           </div>
@@ -92,10 +84,8 @@ export default async function HomePage() {
           {news.length === 0 ? (
             <Card className="border-dashed">
               <CardContent className="p-12 text-center">
-                <div className="w-14 h-14 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center mb-4"><Sparkles className="w-6 h-6" /></div>
                 <h3 className="font-semibold text-lg">Aún no hay noticias publicadas</h3>
-                <p className="text-muted-foreground text-sm mt-1 max-w-md mx-auto">Ingresá al panel <Link href="/admin" className="text-primary underline font-medium">/admin</Link> y publicá tu primera historia. Aparecerá acá automáticamente.</p>
-                <Button asChild className="mt-6 brand-gradient text-white"><Link href="/admin">Ir al panel CMS</Link></Button>
+                <p className="text-muted-foreground text-sm mt-1">Publicá desde <Link href="/admin" className="text-primary underline">/admin</Link>.</p>
               </CardContent>
             </Card>
           ) : (
@@ -116,7 +106,7 @@ export default async function HomePage() {
                         {n.author && <span>· {n.author}</span>}
                       </div>
                       <h3 className="font-bold text-lg mt-2 group-hover:text-primary transition-colors line-clamp-2">{n.title}</h3>
-                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{(n.body || '').replace(/<[^>]+>/g,'').slice(0,140)}</p>
+                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{(n.body || '').replace(/[#*_>`]/g,'').slice(0,140)}</p>
                       <span className="inline-flex items-center gap-1 text-sm font-medium text-primary mt-4">Leer más <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" /></span>
                     </CardContent>
                   </Card>

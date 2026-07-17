@@ -8,7 +8,8 @@ const links = [
   { href: '/', label: 'Inicio' },
   { href: '/noticias', label: 'Noticias' },
   { href: '/contacto', label: 'Contacto' },
-  { href: '/admin', label: 'CMS' },
+  { href: '/manual', label: 'Manual' },
+  { href: '/admin', label: 'CMS', external: true },
 ]
 
 export default function Navbar() {
@@ -21,7 +22,9 @@ export default function Navbar() {
           <span className="brand-text-gradient">Funda Crecer</span>
         </Link>
         <nav className="hidden md:flex items-center gap-1">
-          {links.map(l => (
+          {links.map(l => l.external ? (
+            <a key={l.href} href={l.href} target="_blank" rel="noopener" className="px-4 py-2 rounded-md text-sm font-medium text-foreground/70 hover:text-primary hover:bg-primary/5 transition-colors">{l.label}</a>
+          ) : (
             <Link key={l.href} href={l.href} className="px-4 py-2 rounded-md text-sm font-medium text-foreground/70 hover:text-primary hover:bg-primary/5 transition-colors">{l.label}</Link>
           ))}
           <Button asChild size="sm" className="ml-2 brand-gradient text-white hover:opacity-90"><Link href="/contacto">Donar</Link></Button>
@@ -33,7 +36,9 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden border-t border-border bg-white">
           <div className="container mx-auto px-4 py-3 flex flex-col gap-1">
-            {links.map(l => (
+            {links.map(l => l.external ? (
+              <a key={l.href} href={l.href} target="_blank" rel="noopener" className="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary/5 hover:text-primary">{l.label}</a>
+            ) : (
               <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="px-3 py-2 rounded-md text-sm font-medium hover:bg-primary/5 hover:text-primary">{l.label}</Link>
             ))}
           </div>

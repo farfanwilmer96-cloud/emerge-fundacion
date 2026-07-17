@@ -1,28 +1,24 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import ReactMarkdown from 'react-markdown'
 import { Calendar, User, ArrowLeft, Sprout } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { getAllNews, getNewsBySlug } from '@/lib/content'
 
-async function getNews(slug) {
-  try {
-    const base = process.env.NEXT_PUBLIC_BASE_URL || ''
-    const res = await fetch(`${base}/api/news/${slug}`, { cache: 'no-store' })
-    if (!res.ok) return null
-    const data = await res.json()
-    return data.news || null
-  } catch { return null }
+export async function generateStaticParams() {
+  return getAllNews().map(n => ({ slug: n.slug }))
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
-  const n = await getNews(slug)
+  const n = getNewsBySlug(slug)
   if (!n) return { title: 'Noticia no encontrada — Funda Crecer' }
-  return { title: `${n.title} — Funda Crecer`, description: (n.body || '').replace(/<[^>]+>/g,'').slice(0,150) }
+  return { title: `${n.title} — Funda Crecer`, description: (n.body || '').replace(/[#*_>`\n]/g,' ').slice(0,150) }
 }
 
 export default async function NoticiaDetail({ params }) {
   const { slug } = await params
-  const n = await getNews(slug)
+  const n = getNewsBySlug(slug)
   if (!n) notFound()
 
   return (
@@ -33,7 +29,7 @@ export default async function NoticiaDetail({ params }) {
         ) : (
           <div className="w-full h-full brand-gradient flex items-center justify-center"><Sprout className="w-16 h-16 text-white/60" /></div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         <div className="absolute inset-0 flex items-end">
           <div className="container mx-auto px-4 pb-10 text-white">
             <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 mb-4 -ml-3"><Link href="/noticias"><ArrowLeft className="w-4 h-4 mr-2" /> Volver</Link></Button>
@@ -47,7 +43,9 @@ export default async function NoticiaDetail({ params }) {
       </div>
 
       <div className="container mx-auto px-4 py-14 max-w-3xl">
-        <div className="prose prose-slate prose-lg max-w-none prose-headings:font-bold prose-a:text-primary" dangerouslySetInnerHTML={{ __html: n.body || '' }} />
+        <div className="article-body">
+          <ReactMarkdown>{n.body || ''}</ReactMarkdown>
+        </div>
 
         <div className="mt-14 border-t border-border pt-8 flex justify-between flex-wrap gap-4">
           <Button asChild variant="outline"><Link href="/noticias"><ArrowLeft className="w-4 h-4 mr-2" /> Todas las noticias</Link></Button>
