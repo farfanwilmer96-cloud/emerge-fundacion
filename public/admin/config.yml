@@ -17,9 +17,9 @@ backend:
     uploadMedia: 'Subir imagen "{{path}}"'
     deleteMedia: 'Eliminar imagen "{{path}}"'
 
-# Permite escribir archivos localmente con `npx decap-server`
-# (solo útil para desarrollo, ignorado en producción)
-local_backend: true
+# Habilita modo local con `npx decap-server` (solo para desarrollo local)
+# En producción no afecta, pero lo comentamos para evitar warnings.
+# local_backend: true
 
 # Configuración de Media (imágenes)
 media_folder: "public/images/uploads"
