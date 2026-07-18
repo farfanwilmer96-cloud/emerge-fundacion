@@ -1,6 +1,12 @@
 import { getAllNews, getAllProjects, getAllFaqs } from '@/lib/content'
 
-const SITE = process.env.NEXT_PUBLIC_BASE_URL || 'https://fundacrecer.org'
+// Prioridad de URL:
+// 1. NEXT_PUBLIC_BASE_URL (env explícita)
+// 2. URL (auto-inyectada por Netlify en build time)
+// 3. Fallback a URL real del sitio en Netlify
+const SITE = process.env.NEXT_PUBLIC_BASE_URL
+  || process.env.URL
+  || 'https://clinquant-phoenix-0754e5.netlify.app'
 
 export default function sitemap() {
   const now = new Date().toISOString()

@@ -1,22 +1,24 @@
 # ============================================================
 # CONFIGURACIÓN DECAP CMS — Funda Crecer
 # ------------------------------------------------------------
-# MODO DEMO (actual): usa `test-repo` para que el cliente pruebe
-# la interfaz completa dentro del navegador SIN necesidad de
-# repositorio Git. Los cambios se guardan en memoria y se
-# reinician al recargar. Perfecto para demostraciones.
-#
-# MODO PRODUCCIÓN: cuando el sitio esté en Netlify, comentar
-# `name: test-repo` y descomentar la sección `git-gateway`.
+# Configurado para PRODUCCIÓN con Netlify + Git Gateway.
+# Los cambios que hagas en /admin se commitean a GitHub y
+# Netlify redespliega automáticamente.
 # ============================================================
 
 backend:
-  name: test-repo
-  # --- Para producción en Netlify (descomentar y quitar test-repo): ---
-  # name: git-gateway
-  # branch: main
+  name: git-gateway
+  branch: main
+  # Mensajes de commit personalizados en español
+  commit_messages:
+    create: 'Crear {{collection}} "{{slug}}"'
+    update: 'Actualizar {{collection}} "{{slug}}"'
+    delete: 'Eliminar {{collection}} "{{slug}}"'
+    uploadMedia: 'Subir imagen "{{path}}"'
+    deleteMedia: 'Eliminar imagen "{{path}}"'
 
 # Permite escribir archivos localmente con `npx decap-server`
+# (solo útil para desarrollo, ignorado en producción)
 local_backend: true
 
 # Configuración de Media (imágenes)
@@ -26,12 +28,12 @@ public_folder: "/images/uploads"
 # Interfaz en Español
 locale: 'es'
 
-# Estos URLs son SOLO para el botón "View site" dentro del panel CMS.
-# NO afectan dónde se publica el contenido — eso lo maneja Netlify + GitHub.
-# Cambialos por la URL real de tu sitio cuando lo despliegues.
-# site_url: https://fundacrecer.org
-# display_url: https://fundacrecer.org
-# logo_url: https://images.unsplash.com/photo-1614710791641-4cd7a5c855f2?w=200
+# URL del sitio en Netlify (aparece en el botón "View site" del panel)
+site_url: https://clinquant-phoenix-0754e5.netlify.app
+display_url: https://clinquant-phoenix-0754e5.netlify.app
+
+# Mejor UX: mostrar preview de cambios antes de publicar
+publish_mode: simple
 
 collections:
   # ============================================================

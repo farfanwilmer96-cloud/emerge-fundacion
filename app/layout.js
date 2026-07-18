@@ -8,7 +8,9 @@ import NetlifyIdentityHandler from '@/components/NetlifyIdentityHandler'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
-const SITE = process.env.NEXT_PUBLIC_BASE_URL || 'https://fundacrecer.org'
+const SITE = process.env.NEXT_PUBLIC_BASE_URL
+  || process.env.URL
+  || 'https://clinquant-phoenix-0754e5.netlify.app'
 const OG_IMAGE = 'https://images.unsplash.com/photo-1614710791641-4cd7a5c855f2?w=1200&h=630&fit=crop'
 
 export const metadata = {

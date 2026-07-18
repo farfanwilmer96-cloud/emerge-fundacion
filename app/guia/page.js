@@ -146,23 +146,18 @@ git push -u origin main</pre>
 
         {/* PASO 5 */}
         <section className="step-block">
-          <div className="step-header"><span className="step-num">05</span><h2><Terminal className="inline w-6 h-6 mr-2 text-primary" />Activar el CMS en modo producción</h2></div>
-          <p>El panel todavía está en modo demo. Un cambio de 2 líneas y queda 100% real:</p>
+          <div className="step-header"><span className="step-num">05</span><h2><Terminal className="inline w-6 h-6 mr-2 text-primary" />Configurar variable de entorno (recomendado)</h2></div>
+          <p>Para que los links del sitemap, OpenGraph y JSON-LD apunten a tu dominio de Netlify:</p>
           <ol className="ordered">
-            <li>En tu computadora, abrí el archivo <code>public/admin/config.yml</code> con cualquier editor de texto (Notepad, TextEdit, VS Code, etc.)</li>
-            <li>Al principio del archivo verás esto:</li>
+            <li>Netlify → <strong>Site configuration → Environment variables</strong></li>
+            <li>Clic en <strong>Add a variable</strong></li>
+            <li>Nombre: <code>NEXT_PUBLIC_BASE_URL</code></li>
+            <li>Valor: la URL completa de tu sitio, ej: <code>https://clinquant-phoenix-0754e5.netlify.app</code></li>
+            <li>Guardá y trigger un nuevo deploy (Deploys → Trigger deploy → Clear cache and deploy site)</li>
           </ol>
-          <pre className="code">backend:
-  name: test-repo</pre>
-          <p><strong>Reemplazalo</strong> por:</p>
-          <pre className="code">backend:
-  name: git-gateway
-  branch: main</pre>
-          <p>Guardá el archivo. Luego en la terminal, dentro de la carpeta del proyecto:</p>
-          <pre className="code">git add .
-git commit -m "Activar CMS en producción"
-git push</pre>
-          <p>Netlify detecta el cambio y redespliega solo. Esperá ~2 minutos.</p>
+          <div className="info-box">
+            💡 <strong>El backend del CMS ya está configurado como <code>git-gateway</code> por defecto</strong> en el código. No necesitás modificar nada más para que funcione en producción.
+          </div>
         </section>
 
         {/* PASO 6 */}
